@@ -11,7 +11,7 @@ class ActIFrameUrl(scrapy.Spider):
 
         valid_urls = [url for url in urls if url]
 
-        yield from response.follow_all(valid_urls, self.parse_act)
+        yield from response.follow_all(valid_urls[:5], self.parse_act)
 
     def parse_act(self, response):
         iframe_url = response.xpath("//iframe[@id='legalActResourceURLIframe']/@src").get()
@@ -22,4 +22,5 @@ class ActIFrameUrl(scrapy.Spider):
 
         yield {
             "url": response.url,
+            "body": response.text
         }

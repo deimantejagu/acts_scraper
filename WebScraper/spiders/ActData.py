@@ -1,5 +1,6 @@
 import scrapy
 import re
+import requests
 
 class ActdataSpider(scrapy.Spider):
     name = "ActData"
@@ -12,7 +13,7 @@ class ActdataSpider(scrapy.Spider):
 
         valid_urls = [url for url in urls if url]
 
-        yield from response.follow_all(valid_urls, self.parse_act)
+        yield from response.follow_all(valid_urls[:2], self.parse_act)
 
     def parse_act(self, response):
         # Parsing redirected page
@@ -27,7 +28,11 @@ class ActdataSpider(scrapy.Spider):
         else:
             title = None
 
+        docx_url = response.xpath("//div[contains(@class, 'ui-widget-header') and contains(@class, 'ui-corner-top') and contains(@class, 'pe-layout-pane-header') and contains(@class, 'centerHeader')]//a[@href]/@href").get()
+        docx_url = response.urljoin(docx_url)
+
         yield {
             "url": response.url,
-            "title": title
+            "title": title,
+            "file_urls": [docx_url]
         }
