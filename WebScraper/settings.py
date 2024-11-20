@@ -68,7 +68,8 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #    "WebScraper.pipelines.WebscraperPipeline": 1,
 # }
 ITEM_PIPELINES = {
-   'scrapy.pipelines.files.FilesPipeline': 1,
+   # 'scrapy.pipelines.files.FilesPipeline': 1,
+   'WebScraper.pipelines.DocxFilePipeline': 1,
 }
 
 # Set the directory where the files will be stored
