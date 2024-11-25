@@ -1,5 +1,6 @@
 import scrapy
 import re
+from datetime import date, datetime
 
 class ActData(scrapy.Spider):
     name = "ActData"  
@@ -19,7 +20,7 @@ class ActData(scrapy.Spider):
             urls = await self.extract_data(page)
             urls = [response.urljoin(url) for url in urls]
             
-            print(f"urls: {urls}")
+            print(f"urls: {urls}, skaicius: {len(urls)}")
         finally:
             await page.close()
 
@@ -32,11 +33,12 @@ class ActData(scrapy.Spider):
         urls = []
         link_count = await links.count()
         for i in range(link_count):
+            # date_value = await page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr[{i+1}]/td[6]/span').text_content()
+            # date_value = datetime.strptime(date_value.strip(), "%Y-%m-%d").date()
+            # if date.today() == date_value:
             href = await links.nth(i).get_attribute('href')
             if href:
                 urls.append(href)
-
-        # pasiimti sios dienos data, issiextractinti kiekvieno lino data, paziureti ar sutampa su siandienos, jei sutampa, ideti linka i masyva.
 
         return urls
 
@@ -45,12 +47,10 @@ class ActData(scrapy.Spider):
         urls = response.meta.get('urls', [])
 
         # Follow the first 5 URLs
-        yield from response.follow_all(urls[:10], meta={'playwright': True}, callback=self.parse_act)
+        yield from response.follow_all(urls[:2], meta={'playwright': True}, callback=self.parse_act)
 
     def parse_act(self, response):
         # Parsing act page
-        # Extract date
-        date = response.xpath("//tr[contains(@class, 'ui-widget-content') and contains(@class, 'ui-panelgrid-even')]//td[8]/text()").get()
 
         # Extract title
         pattern = r'[„"](.*?)[“"]'
@@ -74,7 +74,7 @@ class ActData(scrapy.Spider):
 
         yield {
             "url": response.url,
-            "Date": date,
+            "Date": date.today(),
             "title": title,
             "related_documents": related_documents,
             "file_urls": [docx_url]
