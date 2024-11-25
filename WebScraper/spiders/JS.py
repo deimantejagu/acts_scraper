@@ -23,8 +23,7 @@ class JS(scrapy.Spider):
         finally:
             await page.close()
 
-        if urls.count != 0:
-            yield scrapy.Request(url=response.url, meta={'playwright': True, 'urls': urls}, callback=self.parse)
+        yield scrapy.Request(url=response.url, meta={'playwright': True, 'urls': urls}, callback=self.parse, dont_filter=True)
 
     async def extract_data(self, page):
         links = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[4]/a')
