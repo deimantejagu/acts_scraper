@@ -1,11 +1,12 @@
 import scrapy
 import re
-import os
 
 class ActdataSpider(scrapy.Spider):
     name = "ActData"
-    allowed_domains = ["www.lrs.lt", "e-seimas.lrs.lt"]
-    start_urls = ["https://www.lrs.lt/pls/inter/w5_show?p_k=2&p_r=4005"]
+
+    def start_requests(self):
+        url = "https://www.lrs.lt/pls/inter/w5_show?p_k=2&p_r=4005"
+        yield scrapy.Request(url, self.parse)
 
     def parse(self, response):
         # Extract URLs from the page
@@ -13,12 +14,12 @@ class ActdataSpider(scrapy.Spider):
 
         valid_urls = [url for url in urls if url]
 
-        yield from response.follow_all(valid_urls[:5], self.parse_act)
+        yield from response.follow_all(valid_urls[:5], meta={'playwright': True}, callback=self.parse_act)
 
     def parse_act(self, response):
         # Parsing redirected page
 
-         # Extract date
+        # Extract date
         date = response.xpath("//tr[contains(@class, 'ui-widget-content') and contains(@class, 'ui-panelgrid-even')]//td[8]/text()").get()
 
         # Extract title
@@ -32,19 +33,19 @@ class ActdataSpider(scrapy.Spider):
                 title = raw_title
         else:
             title = None
+
+        # Extract related documents
+        related_documents = response.xpath("//div[@id='mainForm:accordionRight:j_id_b0:0:j_id_b1_content']//a[@href]/@href").getall()
+        related_documents = [response.urljoin(doc) for doc in related_documents]
         
         # Extract document
         docx_url = response.xpath("//div[contains(@class, 'ui-widget-header') and contains(@class, 'ui-corner-top') and contains(@class, 'pe-layout-pane-header') and contains(@class, 'centerHeader')]//a[@href]/@href").get()
         docx_url = response.urljoin(docx_url)
-
-        # Extract related documents
-        related_documents = response.xpath("//div[@id='mainForm:accordionRight:j_id_b0:0:j_id_b1_content']//a[@href]/@href").getall()
-        # related_documents = [response.urljoin(doc) for doc in related_documents]
 
         yield {
             "url": response.url,
             "Date": date,
             "title": title,
             "related_documents": related_documents,
-            # "file_urls": [docx_url]
+            "file_urls": [docx_url]
         }
