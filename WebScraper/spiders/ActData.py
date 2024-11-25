@@ -27,15 +27,13 @@ class ActData(scrapy.Spider):
         yield scrapy.Request(url=response.url, meta={'playwright': True, 'urls': urls}, callback=self.parse, dont_filter=True)
 
     async def extract_data(self, page):
+        await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[4]/a')
         links = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[4]/a')
 
         # Extract all href attributes
         urls = []
         link_count = await links.count()
         for i in range(link_count):
-            # date_value = await page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr[{i+1}]/td[6]/span').text_content()
-            # date_value = datetime.strptime(date_value.strip(), "%Y-%m-%d").date()
-            # if date.today() == date_value:
             href = await links.nth(i).get_attribute('href')
             if href:
                 urls.append(href)
@@ -46,8 +44,7 @@ class ActData(scrapy.Spider):
         # Retrieve the passed URLs
         urls = response.meta.get('urls', [])
 
-        # Follow the first 5 URLs
-        yield from response.follow_all(urls[:2], meta={'playwright': True}, callback=self.parse_act)
+        yield from response.follow_all(urls, meta={'playwright': True}, callback=self.parse_act)
 
     def parse_act(self, response):
         # Parsing act page
