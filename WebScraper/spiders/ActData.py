@@ -3,8 +3,8 @@ import re
 
 class ActData(scrapy.Spider):
     name = "ActData"  
-    # allowed_urls = ['e-seimas.lrs.lt']  
-    # start_urls = ["https://e-seimas.lrs.lt/portal/documentSearch/lt"]
+    allowed_urls = ['e-seimas.lrs.lt']  
+    start_urls = ["https://e-seimas.lrs.lt/portal/documentSearch/lt"]
 
     def start_requests(self):
         url = "https://e-seimas.lrs.lt/portal/documentSearch/lt"
