@@ -38,15 +38,19 @@ class ActData(scrapy.Spider):
         dates_count = await dates.count()
         for i in range(dates_count):
             print(f"iteratorius: {i}")
-            extracted_date = await dates.nth(i).text_content()
-            extracted_date = datetime.strptime(extracted_date, "%Y-%m-%d")
+            # extracted_date = await dates.nth(i).text_content()
+            extracted_date = datetime.strptime(await dates.nth(i).text_content(), "%Y-%m-%d")
             print(f"extracted_date: {extracted_date}")
             if extracted_date.date() == date.today():
                 print(f"extracted_date.date(): {extracted_date.date()}")
                 href = await links.nth(i).get_attribute('href')
                 print(f"href: {href}")
                 extracted_links.append(href)
-
+            else:
+                next_extracted_date = datetime.strptime(await dates.nth(i+1).text_content(), "%Y-%m-%d")
+                if next_extracted_date.date() != date.today():
+                    print("ate")
+                    break
 
         return extracted_links
 
