@@ -17,34 +17,44 @@ class ActData(scrapy.Spider):
             await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:searchButtonTop').click()
             await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
 
-            urls = await self.extract_data(page)
-            urls = [response.urljoin(url) for url in urls]
+            extracted_links = await self.extract_data(page)
+            extracted_links = [response.urljoin(extracted_link) for extracted_link in extracted_links]
             
-            print(f"urls: {urls}, skaicius: {len(urls)}")
+            print(f"extracted_links: {extracted_links}, skaicius: {len(extracted_links)}")
         finally:
             await page.close()
 
-        yield scrapy.Request(url=response.url, meta={'playwright': True, 'urls': urls}, callback=self.parse, dont_filter=True)
+        yield scrapy.Request(url=response.url, meta={'playwright': True, 'extracted_links': extracted_links}, callback=self.parse, dont_filter=True)
 
     async def extract_data(self, page):
+        await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[6]/span')
+        dates = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[6]/span')
+
         await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[4]/a')
         links = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[4]/a')
 
-        # Extract all href attributes
-        urls = []
-        link_count = await links.count()
-        for i in range(link_count):
-            href = await links.nth(i).get_attribute('href')
-            if href:
-                urls.append(href)
+        # Extract all links
+        extracted_links = []
+        dates_count = await dates.count()
+        for i in range(dates_count):
+            print(f"iteratorius: {i}")
+            extracted_date = await dates.nth(i).text_content()
+            extracted_date = datetime.strptime(extracted_date, "%Y-%m-%d")
+            print(f"extracted_date: {extracted_date}")
+            if extracted_date.date() == date.today():
+                print(f"extracted_date.date(): {extracted_date.date()}")
+                href = await links.nth(i).get_attribute('href')
+                print(f"href: {href}")
+                extracted_links.append(href)
 
-        return urls
+
+        return extracted_links
 
     def parse(self, response):
-        # Retrieve the passed URLs
-        urls = response.meta.get('urls', [])
+        # Retrieve the passed extracted_links
+        extracted_links = response.meta.get('extracted_links', [])
 
-        yield from response.follow_all(urls, meta={'playwright': True}, callback=self.parse_act)
+        yield from response.follow_all(extracted_links, meta={'playwright': True}, callback=self.parse_act)
 
     def parse_act(self, response):
         # Parsing act page
@@ -71,8 +81,8 @@ class ActData(scrapy.Spider):
 
         yield {
             "url": response.url,
-            "Date": date.today(),
+            # "Date": date.today(),
             "title": title,
-            "related_documents": related_documents,
-            "file_urls": [docx_url]
+            # "related_documents": related_documents,
+            # "file_urls": [docx_url]
         }
