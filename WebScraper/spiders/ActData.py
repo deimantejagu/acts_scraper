@@ -9,15 +9,26 @@ class ActData(scrapy.Spider):
 
     def start_requests(self):
         url = "https://e-seimas.lrs.lt/portal/documentSearch/lt"
-        yield scrapy.Request(url, meta=dict(playwright=True, playwright_include_page=True), callback=self.go_to_acts)
+        yield scrapy.Request(url, meta=dict(playwright=True, playwright_include_page=True), callback=self.go_to_acts_page)
 
-    async def go_to_acts(self, response):
+    async def go_to_acts_page(self, response):
         page = response.meta["playwright_page"]
         try:
-            await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:searchButtonTop').click()
+            navigator_panel = page.locator('#ssearchCompositeComponent\\:contentForm\\:navigatorPanel')
+            
+            if await navigator_panel.count() <= 0:
+                await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:searchButtonTop').click()
+                print("Button is clicked")
+            else:
+                # Press next page
+                print("Press next page")
+                # await page.locator('xpath=//span[contains(@class, "ui-paginator-page") and contains(@class, "ui-state-default") and contains(@class, "ui-corner-all")][2]').click()
+
+            # Wait for the results table data to appear
+            await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
             await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
 
-            extracted_links = await self.extract_data(page)
+            extracted_links = await self.extract_valid_acts_links(page)
             extracted_links = [response.urljoin(extracted_link) for extracted_link in extracted_links]
             
             print(f"extracted_links: {extracted_links}, skaicius: {len(extracted_links)}")
@@ -26,7 +37,7 @@ class ActData(scrapy.Spider):
 
         yield scrapy.Request(url=response.url, meta={'playwright': True, 'extracted_links': extracted_links}, callback=self.parse, dont_filter=True)
 
-    async def extract_data(self, page):
+    async def extract_valid_acts_links(self, page):
         await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[6]/span')
         dates = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[6]/span')
 
@@ -83,10 +94,23 @@ class ActData(scrapy.Spider):
         docx_url = response.xpath("//div[contains(@class, 'ui-widget-header') and contains(@class, 'ui-corner-top') and contains(@class, 'pe-layout-pane-header') and contains(@class, 'centerHeader')]//a[@href]/@href").get()
         docx_url = response.urljoin(docx_url)
 
+        
         yield {
             "url": response.url,
-            # "Date": date.today(),
+            "Date": date.today(),
             "title": title,
-            # "related_documents": related_documents,
-            # "file_urls": [docx_url]
+            "related_documents": related_documents,
+            "file_urls": [docx_url]
         }
+
+        # yield scrapy.Request (
+        #     url=response.url,
+        #     callback=self.go_to_acts_page,
+        #     meta={
+        #         "url": response.url,
+        #         "Date": date.today(),
+        #         "title": title,
+        #         # "related_documents": related_documents,
+        #         # "file_urls": [docx_url]
+        #     }
+        # )
