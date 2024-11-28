@@ -1,6 +1,7 @@
 import scrapy
 import re
 from datetime import date, datetime
+from WebScraper.items import ActDataItem
 
 class ActData(scrapy.Spider):
     name = "ActData"  
@@ -49,7 +50,6 @@ class ActData(scrapy.Spider):
         dates_count = await dates.count()
         for i in range(dates_count):
             print(f"iteratorius: {i}")
-            # extracted_date = await dates.nth(i).text_content()
             extracted_date = datetime.strptime(await dates.nth(i).text_content(), "%Y-%m-%d")
             print(f"extracted_date: {extracted_date}")
             if extracted_date.date() == date.today():
@@ -94,14 +94,14 @@ class ActData(scrapy.Spider):
         docx_url = response.xpath("//div[contains(@class, 'ui-widget-header') and contains(@class, 'ui-corner-top') and contains(@class, 'pe-layout-pane-header') and contains(@class, 'centerHeader')]//a[@href]/@href").get()
         docx_url = response.urljoin(docx_url)
 
-        
-        yield {
-            "url": response.url,
-            "Date": date.today(),
-            "title": title,
-            "related_documents": related_documents,
-            "file_urls": [docx_url]
-        }
+        actDataItem = ActDataItem()
+        actDataItem['url'] = response.url
+        actDataItem['date'] = date.today()
+        actDataItem['title'] = title
+        actDataItem['related_documents'] = related_documents
+        actDataItem['file_urls'] = [docx_url]
+
+        yield actDataItem
 
         # yield scrapy.Request (
         #     url=response.url,

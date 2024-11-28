@@ -5,7 +5,9 @@
 
 import scrapy
 
-class QuoteItem(scrapy.Item):
-    text = scrapy.Field()
-    author = scrapy.Field()
-    tags = scrapy.Field()
+class ActDataItem(scrapy.Item):
+    url = scrapy.Field()
+    date = scrapy.Field()
+    title = scrapy.Field()
+    related_documents = scrapy.Field()
+    file_urls = scrapy.Field()
