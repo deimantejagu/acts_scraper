@@ -23,7 +23,7 @@ class ActData(scrapy.Spider):
             else:
                 # Press next page
                 print("Press next page")
-                # await page.locator('xpath=//span[contains(@class, "ui-paginator-page") and contains(@class, "ui-state-default") and contains(@class, "ui-corner-all")][2]').click()
+                # await page.evaluate('document.querySelector("span.ui-paginator-last.ui-state-default.ui-corner-all").click()')
 
             # Wait for the results table data to appear
             await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
