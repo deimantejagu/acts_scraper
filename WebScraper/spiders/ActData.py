@@ -1,5 +1,6 @@
 import scrapy
 import re
+import time
 from datetime import date, datetime
 from WebScraper.items import ActDataItem
 
@@ -19,7 +20,7 @@ class ActData(scrapy.Spider):
             await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:searchButtonTop').click()
             print("Button is clicked")
 
-            while(True):
+            while True:
                 # Wait for the results table data to appear
                 await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
 
@@ -27,17 +28,22 @@ class ActData(scrapy.Spider):
                 extracted_links = [response.urljoin(extracted_link) for extracted_link in extracted_links]
                 print(f"extracted_links: {extracted_links}, skaicius: {len(extracted_links)}")
 
-                if len(extracted_links) <= 0:
+                if len(extracted_links) <= 0 or len(all_links ) >= 21:
                     break
                 
                 all_links.extend(extracted_links)
+                print(f"all_links: {len(all_links)}")
 
-                # Press next page
-                print("Press next page")
-                await page.evaluate('document.querySelector("span.ui-paginator-last.ui-state-default.ui-corner-all").click()')
+                # css selector: .ui-paginator-bottom .ui-paginator-next:not(.ui-state-disabled)
+
+                print('attempting to go to next page')
+                await page.locator('.ui-paginator-bottom .ui-paginator-next:not(.ui-state-disabled)').click()
+                time.sleep(5)
         finally:
             await page.close()
-
+        print("visi_linkai")
+        for i, link in enumerate(all_links):
+            print(f"{i} {link}")
         yield scrapy.Request(url=response.url, meta={'playwright': True, 'all_links': all_links}, callback=self.parse, dont_filter=True)
 
     async def extract_valid_acts_links(self, page):
@@ -63,6 +69,7 @@ class ActData(scrapy.Spider):
     def parse(self, response):
         # Retrieve the passed extracted_links
         all_links = response.meta.get('all_links', [])
+        print(f"visiii {len(all_links)}")
 
         yield from response.follow_all(all_links, meta={'playwright': True}, callback=self.parse_act)
 
