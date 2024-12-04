@@ -90,6 +90,7 @@ class ActData(scrapy.Spider):
         actDataItem['url'] = response.url
         actDataItem['date'] = date.today()
         actDataItem['title'] = title
+        # atskira lentele???
         actDataItem['related_documents'] = related_documents
         actDataItem['file_urls'] = [docx_url]
 
