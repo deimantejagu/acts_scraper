@@ -1,7 +1,7 @@
 import scrapy
 import re
 import time
-from datetime import date, datetime
+from datetime import date
 from WebScraper.items import ActDataItem
 
 class ActData(scrapy.Spider):
@@ -17,6 +17,14 @@ class ActData(scrapy.Spider):
         page = response.meta["playwright_page"]
         all_links = []
         try:
+            # Click todays date
+            await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:j_id_30\\:adoptionDateInterval\\:paramAdoptionDateFrom\\:calendar_input').click()
+            await page.locator('xpath=//a[contains(@class, "ui-state-highlight")]').click()
+            print("First date inserted")
+            await page.locator('xpath=//input[contains(@id, "searchCompositeComponent:contentForm:searchParamPane:j_id_30:adoptionDateInterval:j_id_3y:calendar_input")]').click()
+            await page.locator('xpath=//a[contains(@class, "ui-state-highlight")]').click()
+            print("Second date inserted")
+
             await page.locator('#searchCompositeComponent\\:contentForm\\:searchParamPane\\:searchButtonTop').click()
             print("Button is clicked")
 
@@ -24,21 +32,28 @@ class ActData(scrapy.Spider):
                 # Wait for the results table data to appear
                 await page.wait_for_selector('tbody#searchCompositeComponent\\:contentForm\\:resultsTable_data')
 
+                # Get links count
+                pages_numbers = await page.locator('xpath=//div[@id="searchCompositeComponent:contentForm:resultsTable_paginator_bottom"]/span[1]').text_content()
+                print(f"page_numbers {pages_numbers}")
+
                 extracted_links = await self.extract_valid_acts_links(page)
                 extracted_links = [response.urljoin(extracted_link) for extracted_link in extracted_links]
                 print(f"extracted_links: {extracted_links}, skaicius: {len(extracted_links)}")
 
-                if len(extracted_links) <= 0 or len(all_links ) >= 21:
-                    break
+                # if len(extracted_links) <= 0:
+                #     break
                 
                 all_links.extend(extracted_links)
                 print(f"all_links: {len(all_links)}")
 
-                # css selector: .ui-paginator-bottom .ui-paginator-next:not(.ui-state-disabled)
-
-                print('attempting to go to next page')
-                await page.locator('.ui-paginator-bottom .ui-paginator-next:not(.ui-state-disabled)').click()
-                time.sleep(5)
+                next_page_button = page.locator('.ui-paginator-bottom .ui-paginator-next:not(.ui-state-disabled)')
+                if await next_page_button.is_visible():
+                    await next_page_button.click()
+                    time.sleep(5)
+                    print('Moved to the next page')
+                else:
+                    print('No next page available')
+                    break
         finally:
             await page.close()
         print("visi_linkai")
@@ -47,22 +62,22 @@ class ActData(scrapy.Spider):
         yield scrapy.Request(url=response.url, meta={'playwright': True, 'all_links': all_links}, callback=self.parse, dont_filter=True)
 
     async def extract_valid_acts_links(self, page):
-        await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[6]/span')
-        dates = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[6]/span')
+        # await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[6]/span')
+        # dates = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[6]/span')
 
         await page.wait_for_selector('xpath=//tbody[contains(@id, "resultsTable_data")]/tr/td[4]/a')
         links = page.locator('xpath=//tbody[@id="searchCompositeComponent:contentForm:resultsTable_data"]/tr/td[4]/a')
 
         # Extract all links
         extracted_links = []
-        dates_count = await dates.count()
-        for i in range(dates_count):
+        links_count = await links.count()
+        for i in range(links_count):
             print(f"iteratorius: {i}")
-            extracted_date = datetime.strptime(await dates.nth(i).text_content(), "%Y-%m-%d")
-            if extracted_date.date() == date.today():
-                href = await links.nth(i).get_attribute('href')
-                print(f"href: {href}")
-                extracted_links.append(href)
+            # extracted_date = datetime.strptime(await dates.nth(i).text_content(), "%Y-%m-%d")
+            # if extracted_date.date() == date.today():
+            href = await links.nth(i).get_attribute('href')
+            print(f"href: {href}")
+            extracted_links.append(href)
 
         return extracted_links
 
