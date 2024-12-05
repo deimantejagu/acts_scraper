@@ -9,12 +9,11 @@
 from scrapy.pipelines.files import FilesPipeline
 
 class WebscraperPipeline:
-    def process_item(self, item):
-
+    def process_item(self, item, spider):
         return item
     
 class DocxFilePipeline(FilesPipeline):
-    def file_path(self, request):
+    def file_path(self, request, response=None, info=None, *, item=None):
         file_perspective = request.url.split("/")[-4]
         filename = f"{file_perspective}.docx"
 

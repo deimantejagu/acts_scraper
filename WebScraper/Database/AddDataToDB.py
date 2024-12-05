@@ -1,6 +1,6 @@
+import json
+from urllib.parse import urlparse
 from CreateDbConnection import get_connection
-
-connection = get_connection()
 
 def create_Acts_placeholder():
     sql_insert_Act = """
@@ -12,44 +12,75 @@ def create_Acts_placeholder():
 
 def create_RelatedDocuments_placeholder():
     sql_insert_RelatedDocuments = """
-        INSERT INTO RelatedDocuments (url, date, title, document)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO RelatedDocuments (url, act_id)
+        VALUES (?, ?)
     """
 
     return sql_insert_RelatedDocuments
 
-def insert_into_Acts(connection):
-    cursor = connection.cursor()
+def load_json():
+    with open('output.json', 'r') as file:
+        datas = json.load(file)
 
-    # Test data
-    file_path = '/mnt/c/Users/Testinis/Desktop/acts-scraper/downloads/0cf5a27edd_MSO2010_DOCX.docx'
-    with open(file_path, 'rb') as file:
-        blob_data = file.read()
+    return datas
 
-    cursor.execute(create_Acts_placeholder(), 
-    (
-        'https://e-seimas.lrs.lt/portal/legalAct/lt/TAP/8005d610b0b511efa81e811ff75635ec?positionInSearchResults=39&searchModelUUID=31cfffaf-e21d-4042-b6d6-38f86e2a8661', 
-        '2024-12-04', 'Dėl meilės negavimo', 
-        blob_data
-    ))
-    connection.commit()
-    cursor.close()
+def get_new_datas(cursor, datas, table_name):
+    new_datas = []
+    cursor.execute(f"SELECT title FROM {table_name}") 
+    titles = cursor.fetchall()
+    titles = [title[0] for title in titles]
+    for data in datas:
+        if data['title'] not in titles:
+            new_datas.append(data)
 
-def insert_into_RelatedDocuments(connection):
-    cursor = connection.cursor()
+    return new_datas
 
-    cursor.execute(create_RelatedDocuments_placeholder(), 
-    (
-        'https://e-seimas.lrs.lt/portal/legalAct/lt/TAK/391ca611b0b611efa81e811ff75635ec?positionInSearchResults=38&searchModelUUID=31cfffaf-e21d-4042-b6d6-38f86e2a8661',
-        1 
-    ))
+def insert_into_RelatedDocuments(connection, data, cursor, act_id):
+    for related_document in data['related_documents']:
+        cursor.execute(create_RelatedDocuments_placeholder(), 
+        (
+            related_document,
+            act_id 
+        ))
+        connection.commit()
 
-    connection.commit()
-    cursor.close()
+def insert_into_Acts(connection, datas, cursor):
+    for data in datas:
+        file_url = urlparse(data['file_urls'][0]).path
+        file_name = file_url.split('/')[-4] + '.docx'
+        file_path = f'/mnt/c/Users/Testinis/Desktop/acts-scraper/downloads/{file_name}'
+        with open(file_path, 'rb') as file:
+            blob_file = file.read()
+
+        cursor.execute(create_Acts_placeholder(), 
+        (
+            data['url'], 
+            data['date'], 
+            data['title'], 
+            blob_file
+        ))
+        connection.commit()
+
+        if data['related_documents']:
+            act_id = cursor.lastrowid
+            insert_into_RelatedDocuments(connection, data, cursor, act_id)
 
 def main():
-    insert_into_Acts(connection)
-    insert_into_RelatedDocuments(connection)
+    connection = get_connection()
+    cursor = connection.cursor()
+    table_name = "Acts"
+
+    datas = load_json()
+    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    count = cursor.fetchone()[0]
+    if count == 0:
+        insert_into_Acts(connection, datas, cursor)
+    else:
+        new_datas = get_new_datas(cursor, datas, table_name)
+        insert_into_Acts(connection, new_datas, cursor)
+
+    cursor.close()
+    connection.close()
 
 if __name__ == "__main__":
     main()
