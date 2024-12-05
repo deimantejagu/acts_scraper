@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # bash run_scraper.sh
 
-cd /mnt/c/Users/Testinis/Desktop/acts-scraper
-
 # Scrape acts and add to .json
 scrapy crawl ActData -o output.json:json && \
 
