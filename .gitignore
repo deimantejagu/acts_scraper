@@ -1,4 +1,7 @@
 downloads/
+docx_downloads/
 WebScraper/__pycache__/
 output.json
 ActsData.db
+WebScraper/spiders/__pycache__/
+WebScraper/Database/__pycache__/

@@ -16,3 +16,6 @@ python3 WebScraper/Database/AddDataToDB.py && \
 # Delete output.json and downloads folder 
 rm -r downloads
 rm output.json
+
+# Run mail sender
+# python3 -m WebScraper.MailSender.PrepareEmailData  
