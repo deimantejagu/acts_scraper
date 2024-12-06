@@ -2,11 +2,13 @@ import json
 from urllib.parse import urlparse
 from pathlib import Path
 from CreateDbConnection import get_connection
+from datetime import datetime
+
 
 def create_Acts_placeholder():
     sql_insert_Act = """
-        INSERT INTO Acts (url, date, title, document)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO Acts (created_at, url, date, title, document)
+        VALUES (?, ?, ?, ?, ?)
     """
 
     return sql_insert_Act
@@ -51,11 +53,15 @@ def insert_into_Acts(connection, datas, cursor):
         file_url = urlparse(datas[0]['file_urls'][0]).path
         file_name = file_url.split('/')[-4] + '.docx'
         file_path = f'{base_dir}/downloads/{file_name}'
+
+        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         with open(file_path, 'rb') as file:
             blob_file = file.read()
 
         cursor.execute(create_Acts_placeholder(), 
         (
+            created_at,
             data['url'], 
             data['date'], 
             data['title'], 

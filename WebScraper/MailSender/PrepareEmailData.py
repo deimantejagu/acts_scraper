@@ -1,9 +1,8 @@
 from WebScraper.Database.CreateDbConnection import get_connection
-from docx import Document
 import os
 import re
 
-def download_acts(cursor, table_name):
+def download_acts_from_DB(cursor, table_name):
     new_dir = 'docx_downloads'
     os.makedirs(new_dir, exist_ok=True)
 
@@ -22,7 +21,7 @@ def main():
     cursor = connection.cursor()
     table_name = "Acts"
 
-    download_acts(cursor, table_name)
+    download_acts_from_DB(cursor, table_name)
 
     cursor.close()
     connection.close()

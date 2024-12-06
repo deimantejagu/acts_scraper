@@ -13,9 +13,10 @@ fi
 # Read .json and add data into DB
 python3 WebScraper/Database/AddDataToDB.py && \
 
+# Run mail sender
+# python3 -m WebScraper.MailSender.PrepareEmailData  && \
+
 # Delete output.json and downloads folder 
 rm -r downloads
+# rm -r docx_downloads
 rm output.json
-
-# Run mail sender
-# python3 -m WebScraper.MailSender.PrepareEmailData  
