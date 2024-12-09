@@ -50,11 +50,11 @@ def insert_into_RelatedDocuments(connection, data, cursor, act_id):
 def insert_into_Acts(connection, datas, cursor):
     base_dir = Path(__file__).parent.resolve().parent.parent 
     for data in datas:
-        file_url = urlparse(datas[0]['file_urls'][0]).path
+        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        file_url = urlparse(data['file_urls'][0]).path
         file_name = file_url.split('/')[-4] + '.docx'
         file_path = f'{base_dir}/downloads/{file_name}'
-
-        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         with open(file_path, 'rb') as file:
             blob_file = file.read()
