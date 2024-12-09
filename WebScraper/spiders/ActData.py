@@ -67,16 +67,7 @@ class ActData(scrapy.Spider):
         # Parsing act page
 
         # Extract title
-        pattern = r'[„"](.*?)[“"]'
-        raw_title = response.xpath("//span[@id='mainForm:laTitle']/text()").get()
-        if raw_title:
-            match = re.search(pattern, raw_title)
-            if match:
-                title = match.group(1) 
-            else: 
-                title = raw_title
-        else:
-            title = None
+        title = response.xpath("//span[@id='mainForm:laTitle']/text()").get()
 
         # Extract related documents
         related_documents = response.xpath("//div[@id='mainForm:accordionRight:j_id_b0:0:j_id_b1_content']//a[@href]/@href").getall()
@@ -89,8 +80,7 @@ class ActData(scrapy.Spider):
         actDataItem = ActDataItem()
         actDataItem['url'] = response.url
         actDataItem['date'] = date.today()
-        actDataItem['title'] = title
-        # atskira lentele???
+        actDataItem['title'] = title[:254]
         actDataItem['related_documents'] = related_documents
         actDataItem['file_urls'] = [docx_url]
 
