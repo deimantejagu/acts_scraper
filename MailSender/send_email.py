@@ -6,72 +6,89 @@ from email import encoders
 import zipfile
 import os
 import io
+from datetime import datetime
+from pathlib import Path
 
 MAX_EMAIL_SIZE = 25
+DIRECTORY_PATH = Path("docx_downloads").resolve()
 
-def zip_directory(directory_path):
-    zip_buffer = io.BytesIO()
+def get_docx_files_and_sizes():
     files = []
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for foldername, subfolders, filenames in os.walk(directory_path):
-            for filename in filenames:
-                file_path = os.path.join(foldername, filename)
-                file_size = os.stat(file_path).st_size
-                files = zip(filename, file_size)
-                # files_sizes.append(file_size)
-                zipf.write(file_path, arcname=os.path.relpath(file_path, directory_path))
-    zip_buffer.seek(0)
+    all_files_size = 0
+    for filename in os.listdir(DIRECTORY_PATH):
+        file_path = os.path.join(DIRECTORY_PATH, filename)
+        file_size = os.path.getsize(file_path)
+        file_size /= (1024 * 1024)
+        all_files_size += file_size
+        files.append((filename, file_size))
+    print(f"All files: {len(files)}")
+    print(f"All files size: {all_files_size}")
 
-    zip_size_mb = len(zip_buffer.getvalue()) / (1024 * 1024)
-    print(f"Zip file size: {zip_size_mb:.2f} MB")
-
-    # return zip_buffer, files_sizes
     return files
 
 def split_files_zip(files):
-    for file in files:
-        print(f"{tuple(file)}")
-    # current_size = 0
-    # for size in files_sizes:
-    #     size_in_mb = size / (1024 * 1024)
-    #     if current_size + size_in_mb < MAX_EMAIL_SIZE:
-    #         current_size += size_in_mb
-    #     else:
-    #         print(current_size) 
-    #         current_size = 0
-    pass
+    zip_files = []
+    current_size = 0
+    for filename, file_size in files:
+        if current_size + file_size < MAX_EMAIL_SIZE:
+            current_size += file_size
+            zip_files.append(filename)
+        else:
+            print("--------")
+            print(f"Last file size + current size: {current_size + file_size}")
+            print(f"Current size: {current_size}") 
+            print(f"All files in zip: {len(zip_files)}")
+            break
+
+    return zip_files
+
+def press_files_into_zip(zip_name, file_paths):
+    zip_file_path = f"{zip_name}.zip"
+    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for file_path in file_paths:
+            full_path = DIRECTORY_PATH / file_path
+            zipf.write(full_path, arcname=full_path.name)
+
+    zip_file_size = os.path.getsize(zip_file_path) / (1024 * 1024)
+    print("--------")
+    print(f"ZIP file size: {zip_file_size:.2f}")
+
+    return zip_file_path
 
 def send_email():
-    # Set up the SMTP server
+    # Set up SMTP server
     server = smtplib.SMTP('localhost', 1025)  # Mailpit server running on localhost
 
-    # Create the email
+    # Create email
     msg = MIMEMultipart()
     msg['Subject'] = 'Test Email With Attachment'
     msg['From'] = 'praktika985@gmail.com'
     msg['To'] = 'praktika985@gmail.com'
 
-    # Attach the email body
+    # Attach email body
     msg.attach(MIMEText('This is a test email with a zipped attachment.', 'plain'))
 
-    # Zip the directory
-    directory_path = 'docx_downloads'
-    zip_file, files_sizes = zip_directory(directory_path)
+    # Zip directory
+    folder_name = datetime.today().strftime("%Y-%m-%d")
+    files = get_docx_files_and_sizes()
+    zip_files = split_files_zip(files)
+    zip_file_path = press_files_into_zip(folder_name, zip_files)
 
-    split_files_zip(files_sizes)
-
-    # Attach the zip file
-    filename = 'output.zip'
-    part = MIMEBase('application', 'octet-stream')
-    part.set_payload(zip_file.read())
-    encoders.encode_base64(part)
-    part.add_header('Content-Disposition', f'attachment; filename={filename}')
+    # Attach zip file
+    with open(zip_file_path, 'rb') as f:
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(f.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename={folder_name}')
 
     msg.attach(part)
 
-    # Send the email
+    # Send email
     server.sendmail('praktika985@gmail.com', ['praktika985@gmail.com'], msg.as_string())
     server.quit()
+
+    # Clean up ZIP file after sending
+    os.remove(zip_file_path)
 
 def main():
     send_email()
