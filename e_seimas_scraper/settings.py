@@ -1,4 +1,4 @@
-# Scrapy settings for WebScraper project
+# Scrapy settings for e_seimas_scraper project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,13 +7,13 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "WebScraper"
+BOT_NAME = "e_seimas_scraper"
 
-SPIDER_MODULES = ["WebScraper.spiders"]
-NEWSPIDER_MODULE = "WebScraper.spiders"
+SPIDER_MODULES = ["e_seimas_scraper.spiders"]
+NEWSPIDER_MODULE = "e_seimas_scraper.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "WebScraper (+http://www.yourdomain.com)"
+#USER_AGENT = "e_seimas_scraper (+http://www.yourdomain.com)"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 
 # Obey robots.txt rules
@@ -47,13 +47,13 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "WebScraper.middlewares.WebscraperSpiderMiddleware": 543,
+#    "e_seimas_scraper.middlewares.e_seimas_scraperSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "WebScraper.middlewares.WebscraperDownloaderMiddleware": 543,
+#    "e_seimas_scraper.middlewares.e_seimas_scraperDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -65,11 +65,11 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # ITEM_PIPELINES = {
-#    "WebScraper.pipelines.WebscraperPipeline": 1,
+#    "e_seimas_scraper.pipelines.e_seimas_scraperPipeline": 1,
 # }
 ITEM_PIPELINES = {
    # 'scrapy.pipelines.files.FilesPipeline': 1,
-   'WebScraper.pipelines.DocxFilePipeline': 1,
+   'e_seimas_scraper.pipelines.DocxFilePipeline': 1,
 }
 
 # Set the directory where the files will be stored

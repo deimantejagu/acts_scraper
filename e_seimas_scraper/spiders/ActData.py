@@ -1,12 +1,10 @@
 import scrapy
 import time
 from datetime import date, datetime
-from WebScraper.items import ActDataItem
+from e_seimas_scraper.items import ActDataItem
 
 class ActData(scrapy.Spider):
     name = "ActData"  
-    # allowed_urls = ['e-seimas.lrs.lt']  
-    # start_urls = ["https://e-seimas.lrs.lt/portal/documentSearch/lt"]
 
     def __init__(self):
         super().__init__()

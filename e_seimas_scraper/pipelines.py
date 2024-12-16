@@ -8,7 +8,7 @@
 
 from scrapy.pipelines.files import FilesPipeline
 
-class WebscraperPipeline:
+class e_seimas_scraperPipeline:
     def process_item(self, item, spider):
         return item
     
