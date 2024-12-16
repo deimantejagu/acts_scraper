@@ -1,7 +1,7 @@
 import json
 from urllib.parse import urlparse
 from pathlib import Path
-from WebScraper.database.create_db_connection import get_connection
+from database.create_db_connection import get_connection
 from datetime import datetime
 
 def create_Acts_placeholder():
@@ -21,7 +21,7 @@ def create_RelatedDocuments_placeholder():
     return sql_insert_RelatedDocuments
 
 def load_json():
-    with open('output.json', 'r') as file:
+    with open('storage/output.json', 'r') as file:
         datas = json.load(file)
 
     return datas
@@ -47,13 +47,13 @@ def insert_into_RelatedDocuments(connection, data, cursor, act_id):
         connection.commit()
 
 def insert_into_Acts(connection, datas, cursor):
-    base_dir = Path(__file__).parent.resolve().parent.parent 
+    base_dir = Path(__file__).parent.resolve().parent
     for data in datas:
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         file_url = urlparse(data['file_urls'][0]).path
         file_name = file_url.split('/')[-4] + '.docx'
-        file_path = f'{base_dir}/downloads/{file_name}'
+        file_path = f'{base_dir}/storage/downloads/{file_name}'
 
         with open(file_path, 'rb') as file:
             blob_file = file.read()

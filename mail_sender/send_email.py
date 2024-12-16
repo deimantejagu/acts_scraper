@@ -10,7 +10,7 @@ from pathlib import Path
 from .prepare_email_data import main as prepare_email
 
 MAX_EMAIL_SIZE = 25
-DIRECTORY_PATH = Path("docx_downloads").resolve()
+DIRECTORY_PATH = Path("storage/docx_downloads").resolve()
 
 def get_docx_files_and_sizes():
     files = []

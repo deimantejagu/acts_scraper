@@ -73,7 +73,7 @@ ITEM_PIPELINES = {
 }
 
 # Set the directory where the files will be stored
-FILES_STORE = r"downloads"
+FILES_STORE = r"storage/downloads"
 
 # Specify the field to store the URLs of the files (this should match the field in your spider)
 FILES_URLS_FIELD = "file_urls"  # The field in the spider containing the file URLs

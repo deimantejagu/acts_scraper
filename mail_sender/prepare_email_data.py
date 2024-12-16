@@ -2,12 +2,12 @@ import os
 import re
 import unicodedata
 from collections import Counter
-from WebScraper.database.create_db_connection import get_connection
+from database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 255
 
 def download_acts_from_DB(cursor, table_name):
-    new_dir = 'docx_downloads'
+    new_dir = 'storage/docx_downloads'
     os.makedirs(new_dir, exist_ok=True)
 
     cursor.execute(f"SELECT title, document FROM {table_name}")

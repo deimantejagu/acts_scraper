@@ -1,5 +1,4 @@
 import scrapy
-import re
 import time
 from datetime import date
 from WebScraper.items import ActDataItem

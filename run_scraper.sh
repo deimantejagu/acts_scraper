@@ -2,21 +2,21 @@
 # bash run_scraper.sh
 
 # Scrape acts and add to .json
-scrapy crawl ActData -o output.json:json && \
+scrapy crawl ActData -o storage/output.json:json && \
 
 # Create databaseif not exists
-DATABASE="ActsData.db"
+DATABASE="storage/ActsData.db"
 if [ ! -f "$DATABASE" ]; then
-    python3 WebScraper/database/create_db.py
+    python3 -m database.create_db
 fi
 
 # Read .json and add data into DB
-python3 -m WebScraper.database.add_data_into_db && \
+python3 -m database.add_data_into_db && \
 
 # Run mail sender
 python3 -m mail_sender.send_email && \
 
 # Delete output.json and downloads folders
-rm -r downloads 
-rm -r docx_downloads 
-rm output.json
+rm -r storage/downloads 
+rm -r storage/docx_downloads 
+rm storage/output.json
