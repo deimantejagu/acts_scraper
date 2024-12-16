@@ -17,6 +17,4 @@ python3 -m database.add_data_into_db && \
 python3 -m mail_sender.send_email && \
 
 # Delete output.json and downloads folders
-rm -r storage/downloads 
-rm -r storage/docx_downloads 
-rm storage/output.json
+rm -r storage/
