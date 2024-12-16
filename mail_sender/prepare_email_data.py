@@ -12,7 +12,6 @@ def download_acts_from_DB(cursor, table_name):
 
     cursor.execute(f"SELECT title, document FROM {table_name}")
     rows = cursor.fetchall()
-    print(f"Number of rows fetched: {len(rows)}")
 
     title_counts = Counter()
 
@@ -32,7 +31,7 @@ def download_acts_from_DB(cursor, table_name):
             sanitized_title = f"{sanitized_title}_{title_counts[sanitized_title]}"
         output_path = os.path.join(new_dir, f"{sanitized_title}.docx")
 
-        # Ensure the path length does not exceed the limit
+        # Ensure that path length does not exceed the limit
         reserved_length = len(new_dir) + len(".docx") + 3 # Reserve space for separators
         if len(output_path) > MAX_PATH_LENGTH:
             valid_title_length = MAX_PATH_LENGTH - reserved_length
@@ -41,19 +40,13 @@ def download_acts_from_DB(cursor, table_name):
             output_path = os.path.join(new_dir, f"{sanitized_title}.docx")
 
         try:
-            # Save the file
+            # Save file
             with open(output_path, 'wb') as file:
                 file.write(document)
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 
-    saved_files = os.listdir(new_dir)
-    # Compare saved files with rows
-    print(f"Number of files saved: {len(saved_files)}")
-    if len(rows) != len(saved_files):
-        print(f"Mismatch: {len(rows) - len(saved_files)} files were not saved!")
-
-def main():
+def prepare():
     connection = get_connection()
     cursor = connection.cursor()
     table_name = "Acts"
@@ -62,6 +55,3 @@ def main():
 
     cursor.close()
     connection.close()
-
-if __name__ == "__main__":
-    main()
