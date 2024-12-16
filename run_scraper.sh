@@ -5,7 +5,7 @@
 scrapy crawl ActData -o storage/output.json:json && \
 
 # Create databaseif not exists
-DATABASE="storage/ActsData.db"
+DATABASE="database/ActsData.db"
 if [ ! -f "$DATABASE" ]; then
     python3 -m database.create_db
 fi
