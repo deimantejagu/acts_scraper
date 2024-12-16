@@ -1,12 +1,16 @@
 import scrapy
 import time
-from datetime import date
+from datetime import date, datetime
 from WebScraper.items import ActDataItem
 
 class ActData(scrapy.Spider):
     name = "ActData"  
-    allowed_urls = ['e-seimas.lrs.lt']  
-    start_urls = ["https://e-seimas.lrs.lt/portal/documentSearch/lt"]
+    # allowed_urls = ['e-seimas.lrs.lt']  
+    # start_urls = ["https://e-seimas.lrs.lt/portal/documentSearch/lt"]
+
+    def __init__(self):
+        super().__init__()
+        self.created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def start_requests(self):
         url = "https://e-seimas.lrs.lt/portal/documentSearch/lt"
@@ -77,6 +81,7 @@ class ActData(scrapy.Spider):
         docx_url = response.urljoin(docx_url)
 
         actDataItem = ActDataItem()
+        actDataItem['created_at'] = self.created_at
         actDataItem['url'] = response.url
         actDataItem['date'] = date.today()
         actDataItem['title'] = title[:254]

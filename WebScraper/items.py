@@ -6,6 +6,7 @@
 import scrapy
 
 class ActDataItem(scrapy.Item):
+    created_at = scrapy.Field()
     url = scrapy.Field()
     date = scrapy.Field()
     title = scrapy.Field()

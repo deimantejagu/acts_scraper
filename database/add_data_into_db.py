@@ -49,7 +49,7 @@ def insert_into_RelatedDocuments(connection, data, cursor, act_id):
 def insert_into_Acts(connection, datas, cursor):
     base_dir = Path(__file__).parent.resolve().parent
     for data in datas:
-        created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         file_url = urlparse(data['file_urls'][0]).path
         file_name = file_url.split('/')[-4] + '.docx'
@@ -60,7 +60,7 @@ def insert_into_Acts(connection, datas, cursor):
 
         cursor.execute(create_Acts_placeholder(), 
         (
-            created_at,
+            data['created_at'],
             data['url'], 
             data['date'], 
             data['title'], 
