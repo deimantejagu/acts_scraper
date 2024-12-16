@@ -1,8 +1,8 @@
-from WebScraper.Database.CreateDbConnection import get_connection
 import os
 import re
 import unicodedata
 from collections import Counter
+from WebScraper.database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 255
 
@@ -22,7 +22,7 @@ def download_acts_from_DB(cursor, table_name):
         # Validate file name
         sanitized_title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode('ascii')
         sanitized_title = re.sub(r'[^\w\s-]', '', sanitized_title.lower())
-        sanitized_title = re.sub(r'[-\s]+', '-', sanitized_title).strip('-_')
+        sanitized_title = re.sub(r'[-\s]+', '_', sanitized_title).strip('-_')
 
         # Increment the counter for this title
         title_counts[sanitized_title] += 1

@@ -5,9 +5,9 @@ from email.mime.base import MIMEBase
 from email import encoders
 import zipfile
 import os
-import io
 from datetime import datetime
 from pathlib import Path
+from .prepare_email_data import main as prepare_email
 
 MAX_EMAIL_SIZE = 25
 DIRECTORY_PATH = Path("docx_downloads").resolve()
@@ -91,6 +91,7 @@ def send_email():
     os.remove(zip_file_path)
 
 def main():
+    prepare_email()
     send_email()
 
 if __name__ == "__main__":

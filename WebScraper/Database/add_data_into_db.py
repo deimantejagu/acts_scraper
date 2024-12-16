@@ -1,9 +1,8 @@
 import json
 from urllib.parse import urlparse
 from pathlib import Path
-from CreateDbConnection import get_connection
+from WebScraper.database.create_db_connection import get_connection
 from datetime import datetime
-
 
 def create_Acts_placeholder():
     sql_insert_Act = """

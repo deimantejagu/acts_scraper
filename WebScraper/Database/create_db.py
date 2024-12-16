@@ -1,4 +1,4 @@
-from CreateDbConnection import get_connection
+from WebScraper.database.create_db_connection import get_connection
 
 def create_tables():
     connection = get_connection()
