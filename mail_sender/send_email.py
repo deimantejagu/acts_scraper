@@ -9,7 +9,7 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from .prepare_email_data import prepare
 
-MAX_EMAIL_SIZE = 2
+MAX_EMAIL_SIZE = 3
 DIRECTORY_PATH = Path("storage/docx_downloads").resolve()
 
 def get_docx_files_and_sizes():
@@ -56,10 +56,10 @@ def send_email(zip_files, server):
 
     # Attach zip file
     with open(zip_file_path, 'rb') as f:
-        part = MIMEBase('application', 'octet-stream')
+        part = MIMEBase('application', 'zip')
         part.set_payload(f.read())
         encoders.encode_base64(part)
-        part.add_header('Content-Disposition', f'attachment; filename={folder_name}')
+        part.add_header('Content-Disposition', f'attachment; filename={folder_name}.zip')
 
     msg.attach(part)
 
@@ -88,16 +88,16 @@ def split_files_zip(files, server):
 
     # Handle any remaining files after the loop finishes
     if zip_files:
-        print("--------")
+        print("-----------------------------------------------------------")
         print(f"Final batch size: {current_size}")
         print(f"All files in zip: {len(zip_files)}")
         send_email(zip_files, server)
 
 def main():
     # Set up SMTP server
-    server = smtplib.SMTP('localhost', 1025)  # Mailpit server running on localhost
+    server = smtplib.SMTP('localhost', 1025) # Mailpit server running on localhost
 
-    # prepare()
+    prepare()
     files = get_docx_files_and_sizes()
     split_files_zip(files, server)
 

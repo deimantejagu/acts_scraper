@@ -10,7 +10,12 @@ def download_acts_from_DB(cursor, table_name):
     new_dir = 'storage/docx_downloads'
     os.makedirs(new_dir, exist_ok=True)
 
-    cursor.execute(f"SELECT title, document FROM {table_name}")
+    # Select when last data was created_at
+    cursor.execute(f"SELECT created_at FROM {table_name} ORDER BY created_at DESC LIMIT 1")
+    last_created_at = cursor.fetchone()[0]
+    print(last_created_at)
+
+    cursor.execute(f"SELECT title, document FROM {table_name} WHERE created_at = ?", (last_created_at,))    
     rows = cursor.fetchall()
 
     title_counts = Counter()
