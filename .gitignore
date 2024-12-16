@@ -1,5 +1,2 @@
 WebScraper/**/__pycache__/
-downloads/
-docx_downloads/
-output.json
-ActsData.db
+WebScraper/storage/
