@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# dos2unix run_scraper.sh
 # bash run_scraper.sh
 
 # Scrape acts and add to .json
@@ -11,10 +11,10 @@ if [ ! -f "$DATABASE" ]; then
 fi
 
 # Read .json and add data into DB
-python3 -m database.add_data_into_db && \
+python3 -m database.add_data_into_db
 
 # Run mail sender
-python3 -m mail_sender.send_email && \
+# python3 -m mail_sender.send_email && \
 
 # Delete output.json and downloads folders
-rm -r storage/
+# rm -r storage/
