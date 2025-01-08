@@ -5,10 +5,10 @@ from collections import Counter
 from database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 255
+NEW_DIR = 'storage/docx_downloads'
 
 def download_acts_from_DB(cursor, table_name):
-    new_dir = 'storage/docx_downloads'
-    os.makedirs(new_dir, exist_ok=True)
+    os.makedirs(NEW_DIR, exist_ok=True)
 
     # Select when last data was created_at
     cursor.execute(f"SELECT created_at FROM {table_name} ORDER BY created_at DESC LIMIT 1")
@@ -34,15 +34,15 @@ def download_acts_from_DB(cursor, table_name):
         # Handle duplicates by appending the counter
         if title_counts[sanitized_title] > 1:
             sanitized_title = f"{sanitized_title}_{title_counts[sanitized_title]}"
-        output_path = os.path.join(new_dir, f"{sanitized_title}.docx")
+        output_path = os.path.join(NEW_DIR, f"{sanitized_title}.docx")
 
         # Ensure that path length does not exceed the limit
-        reserved_length = len(new_dir) + len(".docx") + 3 # Reserve space for separators
+        reserved_length = len(NEW_DIR) + len(".docx") + 3 # Reserve space for separators
         if len(output_path) > MAX_PATH_LENGTH:
             valid_title_length = MAX_PATH_LENGTH - reserved_length
             truncated_title = sanitized_title[:valid_title_length]
             sanitized_title = f"{truncated_title}_{title_counts[sanitized_title]}"
-            output_path = os.path.join(new_dir, f"{sanitized_title}.docx")
+            output_path = os.path.join(NEW_DIR, f"{sanitized_title}.docx")
 
         try:
             # Save file

@@ -2,12 +2,14 @@ import json
 from urllib.parse import urlparse
 from pathlib import Path
 from database.create_db_connection import get_connection
-from datetime import datetime
+
+JSON_DATA = 'storage/output.json'
+TABLE_NAME = "Acts"
 
 def create_Acts_placeholder():
     sql_insert_Act = """
-        INSERT INTO Acts (created_at, url, date, title, document)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Acts (created_at, url, date, title, document, ollamaAnalysedDocument)
+        VALUES (?, ?, ?, ?, ?, ?)
     """
 
     return sql_insert_Act
@@ -21,14 +23,14 @@ def create_RelatedDocuments_placeholder():
     return sql_insert_RelatedDocuments
 
 def load_json():
-    with open('storage/output.json', 'r') as file:
+    with open(JSON_DATA, 'r') as file:
         datas = json.load(file)
 
     return datas
 
-def get_new_datas(cursor, datas, table_name):
+def get_new_datas(cursor, datas):
     new_datas = []
-    cursor.execute(f"SELECT title FROM {table_name}") 
+    cursor.execute(f"SELECT title FROM {TABLE_NAME}") 
     titles = cursor.fetchall()
     titles = [title[0] for title in titles]
     for data in datas:
@@ -49,8 +51,6 @@ def insert_into_RelatedDocuments(connection, data, cursor, act_id):
 def insert_into_Acts(connection, datas, cursor):
     base_dir = Path(__file__).parent.resolve().parent
     for data in datas:
-        # created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
         file_url = urlparse(data['file_urls'][0]).path
         file_name = file_url.split('/')[-4] + '.docx'
         file_path = f'{base_dir}/storage/downloads/{file_name}'
@@ -64,7 +64,8 @@ def insert_into_Acts(connection, datas, cursor):
             data['url'], 
             data['date'], 
             data['title'], 
-            blob_file
+            blob_file,
+            None
         ))
         connection.commit()
 
@@ -75,15 +76,14 @@ def insert_into_Acts(connection, datas, cursor):
 def main():
     connection = get_connection()
     cursor = connection.cursor()
-    table_name = "Acts"
 
     datas = load_json()
-    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    cursor.execute(f"SELECT COUNT(*) FROM {TABLE_NAME}")
     count = cursor.fetchone()[0]
     if count == 0:
         insert_into_Acts(connection, datas, cursor)
     else:
-        new_datas = get_new_datas(cursor, datas, table_name)
+        new_datas = get_new_datas(cursor, datas)
         insert_into_Acts(connection, new_datas, cursor)
 
     cursor.close()

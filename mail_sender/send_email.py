@@ -1,13 +1,14 @@
 import os
 import smtplib
 import zipfile
+
 from pathlib import Path
 from email import encoders
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from .prepare_email_data import prepare
+from utils.prepare_data_from_db import prepare
 
 MAX_EMAIL_SIZE = 3
 DIRECTORY_PATH = Path("storage/docx_downloads").resolve()

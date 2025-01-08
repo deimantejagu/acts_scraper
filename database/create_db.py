@@ -4,24 +4,26 @@ def create_tables():
     connection = get_connection()
     cursor = connection.cursor()
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Acts (
-        act_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        created_at DATETIME,
-        url TEXT,
-        date TEXT,
-        title TEXT,
-        document BLOB
-    )
+        CREATE TABLE IF NOT EXISTS Acts (
+            act_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at DATETIME,
+            url TEXT,
+            date TEXT,
+            title TEXT,
+            document BLOB,
+            ollamaAnalysedDocument BLOB
+        )
     """)
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS RelatedDocuments (
-        doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        url TEXT,
-        act_id INTEGER,
-        FOREIGN KEY (act_id) REFERENCES Acts (act_id)
-    )
+        CREATE TABLE IF NOT EXISTS RelatedDocuments (
+            doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT,
+            act_id INTEGER,
+            FOREIGN KEY (act_id) REFERENCES Acts (act_id)
+        )
     """)
+
     connection.commit()
     cursor.close()
 
