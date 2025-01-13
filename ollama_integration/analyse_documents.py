@@ -5,6 +5,7 @@ from database.create_db_connection import get_connection
 from ollama import ChatResponse, chat, Client
 from docx import Document
 from pathlib import Path
+from io import BytesIO
 
 DIRECTORY_PATH = Path("storage/docx_downloads").resolve()
 TABLE_NAME = "Acts"
@@ -43,31 +44,34 @@ def main():
                 Documento turinys:
             {act_content}"""
 
-            # start = time.time()
+            start = time.time()
+        
+            response_doc = Document()
 
-            # response: ChatResponse = client.chat(model='llama3.2', messages=[ {'role': 'user', 'content': prompt} ])
-            # print(response['message']['content'])
-            # response_content = response['message']['content']
-            output_file = f"{file_name}.docx"
+            response: ChatResponse = client.chat(model='llama3.2', messages=[ {'role': 'user', 'content': prompt} ])
+            print(response['message']['content'])
+            response_content = response['message']['content']
 
             # Add response into doc
-            doc = Document()
-            # doc.add_paragraph(response_content)
+            response_doc.add_paragraph(response_content)
 
-            # elapsed_time = time.time() - start
-            # print(f"Time elapsed: {int(elapsed_time // 60)} minutes {int(elapsed_time % 60)} seconds")
+            # Save the document to a BytesIO object (in memory)
+            doc_buffer = BytesIO()
+            response_doc.save(doc_buffer)
+            doc_buffer.seek(0)  # Reset the pointer to the start of the buffer
 
+            elapsed_time = time.time() - start
+            print(f"Time elapsed: {int(elapsed_time // 60)} minutes {int(elapsed_time % 60)} seconds")
+
+            # Add file into db
             connection = get_connection()
             cursor = connection.cursor()
-            # Retrieve the title from the database
-            cursor.execute(f"SELECT title FROM {TABLE_NAME} ORDER BY created_at DESC")
-            titles = cursor.fetchall()
+
+            file_act_id = file_name.split("_")[-1].split(".")[0]
 
             # Insert analysed file into Acts table
-            if file_name in titles:
-                print(f"file name {file_name}")
-                print(f"file name {titles}")
-                # cursor.execute(f"INSERT INTO {TABLE_NAME} ({TABLE_COLUMN}) VALUES (?)", (output_file,))
+            cursor.execute(f"UPDATE {TABLE_NAME} SET {TABLE_COLUMN} = ? WHERE act_id = ?", (doc_buffer.read(), file_act_id))
+            connection.commit()
         except Exception as e:
             print(f"Error: {e}")
 

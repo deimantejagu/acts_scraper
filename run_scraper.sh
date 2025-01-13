@@ -13,6 +13,9 @@ fi
 # Read .json and add data into DB
 python3 -m database.add_data_into_db && \
 
+# Downloads scraped files
+python3 -m utils.prepare_data_from_db && \
+
 # Run mail sender
 python3 -m mail_sender.send_email
 

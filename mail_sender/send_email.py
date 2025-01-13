@@ -8,7 +8,7 @@ from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from utils.prepare_data_from_db import prepare
+# from utils.prepare_data_from_db import prepare
 
 MAX_EMAIL_SIZE = 3
 DIRECTORY_PATH = Path("storage/docx_downloads").resolve()
@@ -98,7 +98,7 @@ def main():
     # Set up SMTP server
     server = smtplib.SMTP('localhost', 1025) # Mailpit server running on localhost
 
-    prepare()
+    # prepare()
     files = get_docx_files_and_sizes()
     split_files_zip(files, server)
 

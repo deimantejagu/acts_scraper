@@ -4,7 +4,7 @@ import unicodedata
 from collections import Counter
 from database.create_db_connection import get_connection
 
-MAX_PATH_LENGTH = 255
+MAX_PATH_LENGTH = 253
 NEW_DIR = 'storage/docx_downloads'
 
 def download_acts_from_DB(cursor, table_name):
@@ -15,13 +15,13 @@ def download_acts_from_DB(cursor, table_name):
     last_created_at = cursor.fetchone()[0]
     print(last_created_at)
 
-    cursor.execute(f"SELECT title, document FROM {table_name} WHERE created_at = ?", (last_created_at,))    
+    cursor.execute(f"SELECT act_id, title, document FROM {table_name} WHERE created_at = ?", (last_created_at,))    
     rows = cursor.fetchall()
 
     title_counts = Counter()
 
     for row in rows:
-        title, document = row
+        id, title, document = row
 
         # Validate file name
         sanitized_title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore').decode('ascii')
@@ -34,7 +34,7 @@ def download_acts_from_DB(cursor, table_name):
         # Handle duplicates by appending the counter
         if title_counts[sanitized_title] > 1:
             sanitized_title = f"{sanitized_title}_{title_counts[sanitized_title]}"
-        output_path = os.path.join(NEW_DIR, f"{sanitized_title}.docx")
+        output_path = os.path.join(NEW_DIR, f"{sanitized_title}")
 
         # Ensure that path length does not exceed the limit
         reserved_length = len(NEW_DIR) + len(".docx") + 3 # Reserve space for separators
@@ -42,7 +42,8 @@ def download_acts_from_DB(cursor, table_name):
             valid_title_length = MAX_PATH_LENGTH - reserved_length
             truncated_title = sanitized_title[:valid_title_length]
             sanitized_title = f"{truncated_title}_{title_counts[sanitized_title]}"
-            output_path = os.path.join(NEW_DIR, f"{sanitized_title}.docx")
+            output_path = os.path.join(NEW_DIR, f"{sanitized_title}")
+        output_path = f"{output_path}_{id}.docx"
 
         try:
             # Save file
@@ -51,7 +52,7 @@ def download_acts_from_DB(cursor, table_name):
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 
-def prepare():
+def main():
     connection = get_connection()
     cursor = connection.cursor()
     table_name = "Acts"
@@ -60,3 +61,6 @@ def prepare():
 
     cursor.close()
     connection.close()
+
+if __name__ == "__main__":
+    main()
