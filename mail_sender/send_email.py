@@ -10,14 +10,15 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 # from utils.prepare_data_from_db import prepare
 
-MAX_EMAIL_SIZE = 3
+MAX_EMAIL_SIZE = 1.5
 DIRECTORY_PATH = Path("storage/docx_downloads").resolve()
+AI_DIRECTORY_PATH = Path("storage/AI_docx_downloads").resolve()
 
-def get_docx_files_and_sizes():
+def get_docx_files_and_sizes(dir):
     files = []
     all_files_size = 0
-    for filename in os.listdir(DIRECTORY_PATH):
-        file_path = os.path.join(DIRECTORY_PATH, filename)
+    for filename in os.listdir(dir):
+        file_path = os.path.join(dir, filename)
         file_size = os.path.getsize(file_path)
         file_size /= (1024 * 1024)
         all_files_size += file_size
@@ -31,8 +32,15 @@ def press_files_into_zip(zip_name, file_paths):
     zip_file_path = f"{zip_name}.zip"
     with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for file_path in file_paths:
-            full_path = DIRECTORY_PATH / file_path
-            zipf.write(full_path, arcname=full_path.name)
+            if (DIRECTORY_PATH / file_path).exists():
+                full_path = DIRECTORY_PATH / file_path
+            else:
+                full_path = AI_DIRECTORY_PATH / file_path
+
+            try:
+                zipf.write(full_path, arcname=full_path.name)
+            except Exception as e:
+                print(f"Error adding file {full_path} to zip: {e}")
 
     zip_file_size = os.path.getsize(zip_file_path) / (1024 * 1024)
     print("--------")
@@ -70,13 +78,17 @@ def send_email(zip_files, server):
     # Clean up ZIP file after sending
     os.remove(zip_file_path)
 
-def split_files_zip(files, server):
+def split_files_zip(files, AI_files, server):
     zip_files = []
     current_size = 0
+    counter = 0
+
     for filename, file_size in files:
-        if (current_size + file_size) < MAX_EMAIL_SIZE:
-            current_size += file_size
+        if (current_size + file_size + AI_files[counter][1]) < MAX_EMAIL_SIZE:
+            current_size += file_size + AI_files[counter][1]
             zip_files.append(filename)
+            zip_files.append(AI_files[counter][0])
+            counter += 1
         else:
             # Send email
             print("-----------------------------------------------------------")
@@ -99,8 +111,9 @@ def main():
     server = smtplib.SMTP('localhost', 1025) # Mailpit server running on localhost
 
     # prepare()
-    files = get_docx_files_and_sizes()
-    split_files_zip(files, server)
+    files = get_docx_files_and_sizes(DIRECTORY_PATH)
+    AI_files = get_docx_files_and_sizes(AI_DIRECTORY_PATH)
+    split_files_zip(files, AI_files, server)
 
     server.quit()
 
