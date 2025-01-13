@@ -1,19 +1,25 @@
 import os
 import re
 import unicodedata
+import sys
+
 from collections import Counter
+from datetime import datetime, timedelta
 from database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 253
 NEW_DIR = 'storage/docx_downloads'
 
 def download_acts_from_DB(cursor, table_name):
-    os.makedirs(NEW_DIR, exist_ok=True)
-
     # Select when last data was created_at
     cursor.execute(f"SELECT created_at FROM {table_name} ORDER BY created_at DESC LIMIT 1")
     last_created_at = cursor.fetchone()[0]
     print(last_created_at)
+
+    if datetime.strptime(last_created_at, "%Y-%m-%d %H:%M:%S").hour != datetime.now().hour or datetime.strptime(last_created_at, "%Y-%m-%d %H:%M:%S").minute != datetime.now().minute:
+        sys.exit()
+    
+    os.makedirs(NEW_DIR, exist_ok=True)
 
     cursor.execute(f"SELECT act_id, title, document FROM {table_name} WHERE created_at = ?", (last_created_at,))    
     rows = cursor.fetchall()
