@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 from database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 253
-NEW_DIR = 'storage/docx_downloads'
-AI_NEW_DIR = 'storage/AI_docx_downloads'
+# NEW_DIR = 'storage/docx_downloads'
+# AI_NEW_DIR = 'storage/AI_docx_downloads'
 
 def download_from_DB(cursor, table_name, file_column, dir, file_divider):
     # Select when last data was created_at
@@ -64,8 +64,12 @@ def main():
     cursor = connection.cursor()
     table_name = "Acts"
 
-    download_from_DB(cursor, table_name, "document", NEW_DIR, "aktas")
-    download_from_DB(cursor, table_name, "ollamaAnalysedDocument", AI_NEW_DIR, "ataskaita")
+    file_column = sys.argv[1]
+    dir = sys.argv[2]
+    file_divider = sys.argv[3]
+
+    download_from_DB(cursor, table_name, file_column, dir, file_divider)
+    # download_from_DB(cursor, table_name, "ollamaAnalysedDocument", AI_NEW_DIR, "ataskaita")
 
     cursor.close()
     connection.close()

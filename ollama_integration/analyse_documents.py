@@ -26,6 +26,10 @@ def extract_text_from_docx(docx_path):
     return text
 
 def main():
+    with open('utils/AI_vertinimas.txt', 'r') as file:
+        evaluation_doc_lines = file.readlines()
+    evluation_text = ''.join(evaluation_doc_lines)
+
     client = Client(host='http://localhost:11434') 
     files = get_docx_files()
 
@@ -36,13 +40,9 @@ def main():
 
             # Pass file to Ollama
             act_content = extract_text_from_docx(file_path)
-            prompt = f"""Išanalizuokite toliau pateiktą dokumentą, ar jame yra su korupcija susijusių klausimų. 
-                Nustatykite galimas spragas ar korupciją liudijančius modelius, pvz. kyšininkavimą, nepotizmą, 
-                bičiuliškumą ar piktnaudžiavimą valdžia. Pateikite išsamią turinio analizę, daugiausia dėmesio skirdami 
-                konkretiems skirsniams, kurie rodo korupcijos riziką.
-
-                Documento turinys:
-            {act_content}"""
+            prompt = f"""Išanalizuok pagal pateiktus kriterijus kiekvienai kategorijai, o paskui atsakyk į apačioje pateiktus klausimus: 
+                        {evluation_text} įkeltam dokumentui: {act_content}. Atsakymas turi atsirasti prie kiekvieno parašyto vertinimo punkto."""
+            print(prompt)
 
             start = time.time()
         
