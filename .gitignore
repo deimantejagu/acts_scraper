@@ -2,3 +2,4 @@ __pycache__/
 /storage/
 database/ActsData.db
 cron_test.log
+/ollama_integration/AI_vertinimas.txt
