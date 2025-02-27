@@ -23,9 +23,9 @@ scrapy crawl ActData -o storage/output.json:json && \
 
 # Create database if not exists
 DATABASE="database/ActsData.db"
-# if [ ! -f "$DATABASE" ]; then
-python3 -m database.create_db
-# fi
+if [ ! -f "$DATABASE" ]; then
+    python3 -m database.create_db
+fi
 
 # Read .json and add data into DB
 python3 -m database.add_data_into_db && \
@@ -42,7 +42,7 @@ python3 -m utils.prepare_data_from_db "ollamaAnalysedDocument" "storage/AI_docx_
 python3 -m mail_sender.send_email
 
 # Delete output.json and downloads folders
-# rm -r $STORAGE_DIR && \
+rm -r $STORAGE_DIR && \
 
 # Remove the lock file after the script finishes
 rm -f $LOCK_FILE

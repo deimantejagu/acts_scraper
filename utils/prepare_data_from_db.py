@@ -4,12 +4,9 @@ import unicodedata
 import sys
 
 from collections import Counter
-from datetime import datetime, timedelta
 from database.create_db_connection import get_connection
 
 MAX_PATH_LENGTH = 253
-# NEW_DIR = 'storage/docx_downloads'
-# AI_NEW_DIR = 'storage/AI_docx_downloads'
 
 def download_from_DB(cursor, table_name, file_column, dir, file_divider):
     # Select when last data was created_at
@@ -17,9 +14,6 @@ def download_from_DB(cursor, table_name, file_column, dir, file_divider):
     last_created_at = cursor.fetchone()[0]
     print(last_created_at)
 
-    # if datetime.strptime(last_created_at, "%Y-%m-%d %H:%M:%S").hour != datetime.now().hour or datetime.strptime(last_created_at, "%Y-%m-%d %H:%M:%S").minute != datetime.now().minute:
-    #     sys.exit()
-    
     os.makedirs(dir, exist_ok=True)
 
     cursor.execute(f"SELECT act_id, title, {file_column} FROM {table_name} WHERE created_at = ?", (last_created_at,))
@@ -69,7 +63,6 @@ def main():
     file_divider = sys.argv[3]
 
     download_from_DB(cursor, table_name, file_column, dir, file_divider)
-    # download_from_DB(cursor, table_name, "ollamaAnalysedDocument", AI_NEW_DIR, "ataskaita")
 
     cursor.close()
     connection.close()
