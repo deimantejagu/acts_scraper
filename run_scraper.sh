@@ -32,8 +32,8 @@ python3 -m database.add_data_into_db && \
 
 python3 -m utils.prepare_data_from_db "document" "storage/docx_downloads" "aktas" && \
 
-# Pass document to llama3.2
-python3 -m ollama_integration.analyse_documents
+# # Pass document to llama3.2
+# python3 -m ollama_integration.analyse_documents
 
 # Downloads scraped files
 python3 -m utils.prepare_data_from_db "ollamaAnalysedDocument" "storage/AI_docx_downloads" "ataskaita" && \
