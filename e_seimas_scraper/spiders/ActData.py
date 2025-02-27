@@ -80,7 +80,7 @@ class ActData(scrapy.Spider):
 
         actDataItem = ActDataItem()
         actDataItem['created_at'] = self.created_at
-        actDataItem['url'] = response.url
+        actDataItem['url'] = response.urln
         actDataItem['date'] = date.today()
         actDataItem['title'] = title[:254]
         actDataItem['related_documents'] = related_documents

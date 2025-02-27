@@ -26,7 +26,7 @@ def extract_text_from_docx(docx_path):
     return text
 
 def main():
-    with open('utils/AI_vertinimas.txt', 'r') as file:
+    with open('ollama_integration/AI_vertinimas.txt', 'r') as file:
         evaluation_doc_lines = file.readlines()
     evluation_text = ''.join(evaluation_doc_lines)
 

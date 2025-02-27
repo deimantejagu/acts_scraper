@@ -1,0 +1,66 @@
+Atlikdamas korupcijos rizikų vertinimą, vertink pagal šias kategorijas:
+I kategorija. TEISINĖS FORMULUOTĖS, SĄVOKOS
+-	neapibrėžtų terminų vartojimas;
+-	netinkamas terminų vartojimas; 
+-	neaiškios, netikslios ar dviprasmiškos formuluotės; 
+-	klaidingos nuorodos į kitus teisės aktus;
+-	viena kitai prieštaraujančios nuostatos ar neatitikimas kitiems teisės aktams;
+-	teisinio reglamentavimo spragos; 
+
+II kategorija. SKAIDRUMAS IR GALIMYBĖ GAUTI INFORMACIJĄ
+-	nepakankamas institucijos veiklos skaidrumas, veiksmų, sprendimų atsekamumas;
+-	nepakankama prieiga visuomenei prie aktualios informacijos;
+
+III kategorija. KOMPETENCIJA, PROCEDŪROS, TEISĖS IR PAREIGOS
+-	neaiškus subjektas, kuriam taikoma nuostata;
+-	sutampanti kelių subjektų kompetencija;
+-	nustatomos naujos funkcijos, kurios neatitinka subjekto kompetencijos;
+-	nepagrįstos išimtys dėl teisių ir (arba) pareigų nevykdymo;
+-	teisės, o ne pareigos nustatymas;
+-	pareigos nustatomos taip, kad jų vykdymą ar nevykdymą galima aiškinti įvairiai, sudarant galimybes piktnaudžiauti;
+-	neišsamūs, neapibrėžti arba diskreciniai sprendimų priėmimo pagrindai;
+-	kompetencijos paskirstymas, kuris sukelia interesų konfliktą;
+-	būtinų procedūrų nenustatymas ir (arba) neaiškumas dėl jų;
+-	konkrečių terminų nebuvimas / nepagrįsti terminai / nepagrįstas terminų pratęsimas; 
+-	diskriminacinės nuostatos;
+-	pernelyg sudėtingi reikalavimai, siekiant pasinaudoti teisėmis ir (arba) vykdyti pareigas;
+-	asmeninių ar grupinių interesų propagavimas, pažeidžiant viešąjį interesą;
+-	nesąžiningos konkurencijos įtvirtinimas;
+-	per didelės vykdymo išlaidos, palyginti su nauda visuomenei;
+
+IV kategorija. PRIEŽIŪROS MECHANIZMAI
+-	nepakankami priežiūros ir kontrolės mechanizmai (tarpinstituciniai, vidiniai, viešieji);
+-	nepakankami mechanizmai subjekto sprendimams ir veiksmams užginčyti;
+
+V kategorija. ATSAKOMYBĖ IR SANKCIJOS
+-	sutampanti teisinė atsakomybė už tą patį pažeidimą;
+-	neišsamūs atsakomybės atsiradimo pagrindai;
+-	aiškios atsakomybės už pažeidimus nebuvimas; 
+-	pažeidimo ir sankcijos dydžio neatitikimas.
+
+
+
+Klausimai (VA subjekto vertinimui):
+1. Ar teisės akto projektas nesudaro išskirtinių ar nevienodų sąlygų subjektams, su kuriais susijęs teisės akto įgyvendinimas?
+2. Ar teisės akto projekte nėra spragų ar nuostatų, leisiančių dviprasmiškai aiškinti ir taikyti teisės aktą?
+3. Ar teisės akto projekte nustatyta, kad sprendimą dėl teisių suteikimo, apribojimų nustatymo, sankcijų taikymo ir pan. priimantis subjektas atskirtas nuo šių sprendimų teisėtumą ir įgyvendinimą kontroliuojančio (prižiūrinčio) subjekto?
+4. Ar teisės akto projekte nustatyti subjekto įgaliojimai (teisės) atitinka subjekto atliekamas funkcijas (pareigas)?
+5. Ar teisės akto projekte nustatytas baigtinis sprendimų priėmimo kriterijų (atvejų) sąrašas?
+6. Ar teisės akto projekte nustatytas baigtinis motyvuotų atvejų, kai priimant sprendimus taikomos išimtys, sąrašas?
+7. Ar teisės akto projekte nustatyta sprendimų priėmimo, įforminimo ir viešinimo tvarka?
+8. Ar teisės akto projekte nustatyti sprendimų dėl mažareikšmiškumo kriterijai ir priėmimo tvarka?
+9.1. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, ar teisės akto projekte nustatyta kolegialaus sprendimus priimančio subjekto konkretus narių skaičius?
+9.2. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, kurio narius skiria kelios institucijos, ar teisės akto projekte nustatyta proporcinga kiekvienos institucijos skiriamų narių dalis?
+9.3. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, ar teisės akto projekte nustatyta kolegialaus sprendimus priimančio subjekto narių skyrimo mechanizmas?
+9.4. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, ar teisės akto projekte nustatyta kolegialaus sprendimus priimančio subjekto narių rotacija ir kadencijų skaičius ir trukmė?
+9.5. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, ar teisės akto projekte nustatyta kolegialaus sprendimus priimančio subjekto veiklos pobūdis laiko atžvilgiu?
+9.6. Jeigu pagal numatomą reguliavimą sprendimus priima kolegialus subjektas, ar teisės akto projekte nustatyta kolegialaus sprendimus priimančio subjekto asmeninė narių atsakomybė?
+10. Ar numatytos procedūros yra būtinos, nustatyta išsami jų taikymo (viešinimo) tvarka?
+11. Ar teisės akto projekte nustatytas baigtinis motyvuotų atvejų, kai nustatoma procedūra netaikoma, sąrašas? 
+12. Ar teisės akto projektas nustato jo nuostatoms įgyvendinti numatytų procedūrų ir sprendimų priėmimo konkrečius terminus?
+13. Ar teisės akto projektas nustato motyvuotas terminų sustabdymo ir pratęsimo galimybes?
+14. Ar teisės akto projektas nustato kontrolės (priežiūros) procedūrą ir aiškius jos atlikimo kriterijus (atvejus, dažnį, fiksavimą, kontrolės rezultatų viešinimą ir panašiai)?
+15. Ar teisės akto projekte nustatytos kontrolės (priežiūros) skaidrumo ir objektyvumo užtikrinimo priemonės (pavyzdžiui, aiškiai ir išsamiai išdėstytos kontroliuojančio subjekto teisės ir pareigos; nustatyta standartizuota kontrolės atlikimo procedūra; reikalavimas fiksuoti atskirus kontrolės procedūros etapus ir jų rezultatus; atsakingų specialistų rotacija; užkirstas kelias kontroliuojančio ir kontroliuojamo subjektų tiesioginiam kontaktui be liudininkų ir panašiai)?
+16. Ar teisės akto projekte nustatyta subjektų, su kuriais susijęs teisės akto projekto nuostatų įgyvendinimas, atsakomybė?
+17. Ar teisės aktų projekte numatytas baigtinis kriterijų, pagal kuriuos skiriama nuobauda (sankcija) už teisės akto projekte nustatytų nurodymų nevykdymą, sąrašas ir nustatyta aiški nuobaudos (sankcijos) skyrimo procedūra?
+atsakyk į klausimus taip/ne/nėra reglamentavimo dalykas ir trumpus motyvus
